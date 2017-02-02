@@ -1,0 +1,56 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<title>RequireJS测试</title>
+		<script data-main="main" src="require.js"></script>
+		<!-- 测试1 -->
+		<script>
+			require(["scripts/test01/A", "scripts/test01/B"], function(){
+					A();
+					B();
+			});
+		</script>
+		
+		<!-- 测试2 -->
+		<script>
+			require(["scripts/test02/class", "scripts/test02/student"], function(clazz, student){
+				clazz.addToClass(student.createStudent("Jack", "male"));
+				clazz.addToClass(student.createStudent("Lucy", "Famale"));
+				console.log("The class has " + clazz.getClassSize() + " students");
+				console.log(clazz.department);
+				console.log(clazz.classID);
+			});
+		</script>
+		
+		<!-- 测试3 -->
+		<script>
+		require(["scripts/test03/manager"], function(manager){
+			console.log(manager.getClassSize());//输出2。模块加载后一直在内存中
+			manager.addNewStudent("Tom", "Male");
+			manager.addNewStudent("Tony", "Male");
+			console.log(manager.getClassSize());//输出4
+		});
+		</script>
+		
+		<!-- 测试4：配置requireConfig -->
+		<script>
+ 		require.config({
+			//baseUrl : .,
+			paths : {
+				"Test02" : "./scripts/test02",
+			}
+		});
+		require(["Test02/class", "Test02/student", "scripts/test01/A.js"], function(clazz, student, aa){
+			//aa.A(); //报错？因为A.js不是定义为模块，而是简单的函数而已。
+			A();
+			console.log("The class has " + clazz.getClassSize() + " students");//0 重新加载了？为什么
+			clazz.addToClass(student.createStudent("Jack", "male"));
+			clazz.addToClass(student.createStudent("Lucy", "Famale"));
+			console.log("The class has " + clazz.getClassSize() + " students");//2
+		});
+		</script>
+	</head>
+	<body>
+	</body>
+</html>
